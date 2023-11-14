@@ -1,0 +1,3356 @@
+<html>
+<header>
+    <meta charset="utf-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <title>AIO-IR system</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+      integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+</header>
+
+<body onload="on_load(0);" style="overflow: hidden">
+    <style>
+        body {
+    font-family: "Roboto", sans-serif;
+}
+
+
+.multi-select__select {
+    background: white;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    box-sizing: border-box;
+    display: flex;
+    font-size: 16px;
+    font-weight: 500;
+    justify-content: left;
+    padding: 5px 10px;
+    position: relative;
+    transition: 0.2s;
+    width: 100%;
+    height: 30px;
+    border-radius: 15px;
+    border: none;
+    color: #aaaaaa;
+}
+        .multi-select__label::-webkit-scrollbar-track
+        {
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+            background-color: #F5F5F5;
+        }
+
+        .multi-select__label::-webkit-scrollbar
+        {
+            width: 10px;
+            background-color: #F5F5F5;
+        }
+
+        .multi-select__label::-webkit-scrollbar-thumb
+        {
+            background-color: #000000;
+            border: 2px solid #555555;
+        }
+
+
+
+        .multi-select__autocomplete::placeholder {
+    color: red;
+}
+
+.multi-select__options {
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    box-sizing: border-box;
+    color: #363b3e;
+    display: none;
+    left: 0;
+    max-height: 221px;
+    position: absolute;
+    top: 50px;
+    width: 100%;
+    z-index: 5;
+    overflow-y: scroll;
+}
+
+.multi-select__option:hover {
+    background-color: #e9e9e9;
+}
+
+.multi-select__select--opened .multi-select__options {
+    display: block;
+}
+
+.multi-select__option {
+    background: #fff;
+    border-bottom: 1px solid #e4e4e4;
+    box-sizing: border-box;
+    height: 44px;
+    line-height: 25px;
+    padding: 10px;
+}
+
+.multi-select__option-active {
+    background-color: #59d9d4 !important;
+    color: #ffffff;
+}
+
+.multi-select__option--selected {
+    color: #e4e4e4;
+    cursor: initial;
+    pointer-events: none;
+}
+
+.multi-select__option--hidden {
+    display: none;
+}
+
+.multi-select__selected-label {
+    background: #58d8d3;
+    border-radius: 4px;
+    white-space: nowrap;
+    color: #fff;
+    cursor: initial;
+    display: inline-block;
+    margin: 5px;
+    height: 15px;
+    padding: 3px 7px;
+    font-size: 12px;
+}
+
+.multi-select__selected-label:last-of-type {
+    margin-right: 0;
+}
+
+.multi-select__selected-label i {
+    cursor: pointer;
+    display: inline-block;
+    margin-left: 7px;
+}
+
+.multi-select__selected-label i:hover {
+    color: #e4e4e4;
+}
+
+.multi-select__autocomplete {
+    background: #f9f9f8;
+    border-bottom: 1px solid #e4e4e4;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    box-sizing: border-box;
+    font-size: 16px;
+    outline: none;
+    padding: 10px;
+    width: 100%;
+}
+
+.multi-select__label{
+    display:flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+    </style>
+    <style>
+        * {
+    margin: 0;
+}
+
+body {
+    margin: 0;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    background-color: #e0e5ec;
+     padding-top: 60px;
+    overflow: hidden;
+}
+
+.search label {
+    position: absolute;
+    font-size: 30px;
+    padding: 10px
+}
+
+.search input {
+    width: 96%;
+    height: 50px;
+    border: none;
+    border-radius: 10px;
+    padding-left: 5%;
+    font-size: 20px;
+}
+
+
+.group_btn button {
+    width: 130px;
+    height: 50px;
+    border-radius: 10px;
+    margin-right: 3%;
+    color: white;
+    font-size: 20px;
+}
+.search_asr label {
+    font-size: 18px;
+}
+
+.search_asr input {
+    height: 40px;
+    width: 415px;
+    border-radius: 10px;
+    border: none;
+    margin: 5px 10px 0 10px;
+    padding-left: 3%;
+    font-size: 13px;
+}
+
+.search_asr button {
+    width: 80px;
+    height: 40px;
+    color: white;
+    border-radius: 10px;
+    font-size: 15px;
+}
+
+.search_ocr label, .sequence_search label{
+    font-size: 18px;
+}
+
+.search_ocr input, .sequence_search input{
+    height: 40px;
+    width: 415px;
+    border-radius: 10px;
+    border: none;
+    margin: 5px 10px 0 10px;
+    padding-left: 3%;
+    font-size: 13px;
+}
+
+.search_ocr button, .sequence_search button.custom-btn.btn-13 {
+    width: 80px;
+    height: 40px;
+    color: white;
+    background-color: #ff1919;
+    background-image: linear-gradient(315deg, #89d8d3 0%, #ff1919 50%);
+    border-radius: 10px;
+    font-size: 15px;
+}
+
+.img_path label {
+    font-size: 18px;
+}
+
+.img_path input {
+    height: 40px;
+    width: 429px;
+    border-radius: 10px;
+    border: none;
+    margin: 5px 10px 0 10px;
+    padding-left: 2%;
+    font-size: 13px;
+}
+
+.img_path button {
+    width: 80px;
+    height: 40px;
+    color: white;
+    border-radius: 10px;
+    font-size: 15px;
+}
+
+.csv label {
+    font-size: 18px;
+}
+
+.csv select {
+    width: 80px;
+    height: 40px;
+    border-radius: 10px;
+    border: none;
+    margin: 5px 3px 0 10px;
+    padding-left: 5px;
+    font-size: 13px;
+}
+.num_querry label {
+    font-size: 18px;
+}
+
+.num_querry input {
+    width: 45px;
+    height: 40px;
+    border-radius: 10px;
+    border: none;
+    margin: 5px 5px 0 5px;
+    padding-left: 4%;
+    font-size: 13px;
+}
+
+.num_querry button {
+    width: 80px;
+    height: 40px;
+    color: white;
+    border-radius: 10px;
+    font-size: 15px;
+}
+#div_img {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 20px;
+    background-color: #e0e5ec;
+    /* height: 120px;
+        width: 516px; */
+}
+
+.container_img_btn {
+    position: relative;
+    width: 100%;
+    max-width: 289px;
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    padding: 0.2%;
+    cursor: pointer;
+}
+
+.container_img_btn img {
+    width: 100%;
+    height: 100%;
+}
+
+.container_img_btn .btn_knn {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    background-color: #4dccc6;
+    color: white;
+    font-size: 16px;
+    padding: 5px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.container_img_btn .btn_select {
+    display: none;
+    position: absolute;
+    top: 50%;
+    right: 10%;
+    background-color: #4dccc6;
+    color: white;
+    font-size: 16px;
+    padding: 5px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.container_img_btn .btn_knn:hover {
+    background-color: #145552;
+}
+
+.container_img_btn .btn_select:hover {
+    background-color: #145552;
+}
+
+.container_img_btn img:hover {
+    border: 4px solid #4dccc6;
+}
+/* .container_img_btn img:focus{hoverImg
+        border: 1px solid blue;
+    } */
+/* poup */
+
+#popup_canvas {
+    width: 100%;
+    height: 100%;
+}
+
+#popup_fname_div {
+    position: fixed;
+    margin-left: 25%;
+    margin-top: 60%;
+    color: rgb(0, 255, 0);
+    font-size: 30em;
+}
+
+@supports (display: flex) {
+    @media screen and (min-width: 1024px) {
+        article {
+            display: flex;
+        }
+    }
+}
+
+@supports (display: grid) {
+    @media screen and (min-width: 1024px) {
+        article {
+            display: grid;
+        }
+    }
+}
+
+    </style>
+    <style>
+        .sticky-search-bar {
+  position: fixed;
+            width: 98.35%;
+  top: 0;
+            background-color: #3F0D12;
+            padding: 15px;
+            z-index: 999;
+}
+
+.search-mode {
+    width: 10%;
+}
+
+.custom-select {
+  appearance: none;
+  -webkit-appearance: none;
+
+  width: 100%;
+  font-size: 0.9rem;
+  padding: 0.6em 1em;
+  background-color: #fff;
+  border: 1px solid #caced1;
+  border-radius: 0.25rem;
+  color: #000;
+  cursor: pointer;
+}
+
+.search-input input {
+  flex-grow: 1;
+  background-color: #fff;
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 16px;
+  color: #333;
+}
+
+.custom-button {
+  background-color: #A71D31;
+  color: #F1F0CC;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  margin-left: 10px;
+  cursor: pointer;
+  font-size: 16px;
+}
+.custom-button:hover {
+  background-color: #6A9A1F;
+}
+
+
+.container-fluid {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.flex-grow-1 {
+    flex-grow: 1;
+}
+
+
+
+
+.select-wrapper {
+  margin: auto;
+  max-width: 600px;
+  width: calc(100% - 40px);
+}
+.select-pure__select {
+  align-items: center;
+  background: #f9f9f8;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  box-sizing: border-box;
+  color: #363b3e;
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  font-weight: 500;
+  justify-content: left;
+  min-height: 44px;
+  padding: 5px 10px;
+  position: relative;
+  transition: 0.2s;
+  width: 100%;
+}
+.select-pure__options {
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  box-sizing: border-box;
+  color: #363b3e;
+  display: none;
+  left: 0;
+  max-height: 221px;
+  overflow-y: scroll;
+  position: absolute;
+  top: 50px;
+  width: 100%;
+  z-index: 5;
+}
+.select-pure__select--opened .select-pure__options {
+  display: block;
+}
+.select-pure__option {
+  background: #fff;
+  border-bottom: 1px solid #e4e4e4;
+  box-sizing: border-box;
+  height: 44px;
+  line-height: 25px;
+  padding: 10px;
+}
+.select-pure__option--selected {
+  color: #e4e4e4;
+  cursor: initial;
+  pointer-events: none;
+}
+.select-pure__option--hidden {
+  display: none;
+}
+.select-pure__selected-label {
+  background: #5e6264;
+  border-radius: 4px;
+  color: #fff;
+  cursor: initial;
+  display: inline-block;
+  margin: 5px 10px 5px 0;
+  padding: 3px 7px;
+}
+.select-pure__selected-label:last-of-type {
+  margin-right: 0;
+}
+.select-pure__selected-label i {
+  cursor: pointer;
+  display: inline-block;
+  margin-left: 7px;
+}
+.select-pure__selected-label i:hover {
+  color: #e4e4e4;
+}
+.select-pure__autocomplete {
+  background: #f9f9f8;
+  border-bottom: 1px solid #e4e4e4;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  box-sizing: border-box;
+  font-size: 16px;
+  outline: none;
+  padding: 10px;
+  width: 100%;
+}
+    </style>
+    <div class="container">
+        <div class="sticky-search-bar" >
+            <div class="container-fluid">
+                <div class="search-mode col-1">
+                    <select id="searchMode" class="custom-select" style="width: 75%">
+                        <option value="Text">Text</option>
+                        <option value="Sequence">Sequence</option>
+                        <option value="Bert">Bert</option>
+                        <option value="Image">Image</option>
+                    </select>
+                </div>
+                <div id="textSearch" class="flex-grow-1" style="display: flex">
+                    <div class="search-input col-9 flex-grow-1" >
+                        <input
+                            type="text"
+                            placeholder="Text search..."
+                            id="textQuery"
+                            class="custom-input"
+                            style="width: 95%"
+                        />
+                    </div>
+                    <div class="autocomplete" style="width: 300px; background: transparent; "></div>
+                    <div style="display:flex; align-items:center;margin-left: 20px;">
+                        <label for="operator" style="color: #BC6C25"><strong>Operator</strong></label>
+                        <select id="operator" class="custom-select"  style="margin-left: 10px;">
+                            <option value="And">And</option>
+                            <option value="Or">Or</option>
+                        </select>
+                    </div>
+                    <div style="margin-left: 20px;">
+                        <label for="threshold" style="color: #BC6C25"><strong>Threshold</strong></label>
+                        <select id="threshold" name="threshold" style="width: 60px;height:35px; border-radius: 6px; margin-left: 10px;">
+                            <option value="0.5">0.5</option>
+                            <option value="0.3">0.3</option>
+                            <option value="0.2">0.2</option>
+                            <option value="0.1">0.1</option>
+                            <option value="0.05">0.05</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="sequenceSearch" class="search-input col-5 flex-grow-1" style="display: none;">
+                    <input
+                        type="text"
+                        placeholder="Sequence 1..."
+                        id="sequence1"
+                        class="custom-input"
+                        style="width: 90%;"
+                    />
+                </div>
+                <div id="sequenceSearch2" class="search-input col-4 flex-grow-1" style="display: none;">
+                    <input
+                        type="text"
+                        placeholder="Sequence 2..."
+                        id="sequence2"
+                        class="custom-input"
+                        style="width: 90%;"
+                    />
+                </div>
+                <div id="bertSearch" class="search-input col-4 flex-grow-1" style="display: none;">
+                    <input
+                        type="text"
+                        placeholder="Bert search..."
+                        id="bertQuery"
+                        class="custom-input"
+                        style="width: 90%;"
+                    />
+                </div>
+                <div id="imgSearch" class="search-input col-4 flex-grow-1" style="display: none;">
+                    <input
+                                type="text"
+                                placeholder="L01_V001/0100"
+                                id="imgQuery"
+                                class="custom-input"
+                                style="width: 90%;"
+                        />
+                    <button id="submitButton" class="custom-button col-1">Submit</button>
+                </div>
+                <div id="youtubeExport" class="search-input col-5 flex-grow-1" style="display: none; margin-left: 20px">
+                    <input
+                            type="text"
+                            id="youtubeUrl"
+                            class="custom-input"
+                            style="width: 90%;"
+                            readonly
+                    />
+                    <button id="browseButton" class="custom-button">Browse</button>
+
+                </div>
+                <div style="margin-left: 20px;">
+                    <label for="k_value" style="color: #BC6C25"><strong>Nb images</strong></label>
+                    <input type="number" id="k_value" value="300" min="0" step="100" style="width: 50px;height:35px; border-radius: 6px; margin-left: 10px;" />
+                </div>
+                <button id="searchButton" class="custom-button col-1">Search</button>
+            </div>
+            <!-- <div style="height: 5px; width: 100%; background-color: black; margin-bottom: 5px; margin-top: 5px;"></div> -->
+
+        </div>
+        <div id="div_img" style="height: 625px; overflow-y: auto; background: #F1F0CC"></div>
+        <div style="height: 5px; width: 100%; background-color: black;"></div>
+        <div id="div_page" style="display: flex; justify-content: center; align-items: center;"></div>
+        <div id="div_total_page">Total: 1200 page</div>
+        <div style="margin-bottom: 50px;"></div>
+    </div>
+    <script>
+        var data = '{{ data|tojson }}';
+data = data.replace(/\s/g, '');
+data = data.replace(/\\/g, '/');
+data = JSON.parse(data);
+let btn_knn = document.getElementsByClassName("btn_knn");
+let btn_select = document.getElementsByClassName("btn_select");
+let hoverImg = document.getElementsByClassName("hoverImg");
+// console.log("data: " + JSON.stringify(data))
+function add_paging() {
+    console.log(data['num_page']);
+    var url = new URL(window.location.href);
+    var cur_index = parseInt(url.searchParams.get("index"));
+    var imgpath = url.searchParams.get("imgpath");
+    // var labelpath = url.searchParams.get("labelpath");
+    if (cur_index == 'undefined') {
+        cur_index = 0;
+    }
+    var i = cur_index - 4;
+    if (i > 0) {
+        var iDiv = document.createElement('div');
+        iDiv.className = 'page_num';
+        iDiv.innerHTML = "...";
+        document.getElementById("div_page").appendChild(iDiv);
+    }
+    for (i; ((i < data['num_page']) && (i < cur_index + 4)); i++) {
+        if (i < 0) {
+            i = 0;
+        }
+        var iDiv = document.createElement('div');
+        iDiv.className = 'page_num';
+        var iA = document.createElement('a');
+        // iA.href = "?index="+i.toString()+"&imgpath="+imgpath+"&labelpath="+labelpath;
+        iA.href = "?index=" + i.toString() + "&imgpath=" + imgpath;
+        iA.innerHTML = i.toString();
+        if (i == cur_index) {
+            iA.style.color = "green";
+        }
+        iDiv.appendChild(iA);
+        document.getElementById("div_page").appendChild(iDiv);
+    }
+    if (i < data['num_page']) {
+        var iDiv = document.createElement('div');
+        iDiv.className = 'page_num';
+        iDiv.innerHTML = "...";
+        document.getElementById("div_page").appendChild(iDiv);
+    }
+    document.getElementById("div_total_page").innerHTML = "Total: " + data['num_page'].toString() + " page";
+}
+
+function add_img(div_id_image) {
+    let div_img = document.getElementById("div_img");
+    let pagefile_list = data['pagefile'];
+
+    pagefile_list.forEach((item, index) => {
+    // console.log('item: ' + JSON.stringify(item))
+    $("#div_img").append(
+    `<div class= "container_img_btn"  onmouseover="mouseOver(${index})" onmouseout="mouseOut(${index})">
+                        <button class="btn_knn" onClick="go_img_search(${item.id})">IR</button>
+                        <button class="btn_select" onClick="writecsv(${index},'${item.id},${item.imgpath}')">SELECT</button>
+                        <img class="hoverImg" onclick="show_list_segment(${item.id})" src="get_img?fpath=${item.imgpath}">
+
+                    </div>`
+    )
+    });
+}
+
+function mouseOver(id) {
+    // console.log('type: ' + typeof(btn_knn))
+    btn_knn[id].style.display = "block";
+    btn_select[id].style.display = "block";
+}
+
+function mouseOut(id) {
+    // console.log('type: ' + typeof(btn_knn))
+    btn_knn[id].style.display = "none";
+    btn_select[id].style.display = "none";
+}
+
+function go_img_search(id) {
+    // window.location.href = "/imgsearch?imgid=" + id + "&k_value=" + document.getElementById('k_value').value;
+    window.open("/imgsearch?imgid=" + id + "&k_value=" + document.getElementById('k_value').value);
+}
+
+function on_load() {
+    var url = new URL(window.location.href);
+    var imgpath = url.searchParams.get("imgpath");
+    // var labelpath = url.searchParams.get("labelpath");
+    // document.getElementById('imgpath').value = imgpath;
+    // document.getElementById('labelpath').value = labelpath;
+    //if ("query" in data) {
+    //    document.getElementById("text_query").value = data["query"]
+    //}
+    add_paging();
+    add_img("div_img");
+    add_query();
+}
+function add_query(){
+    let mode = data['mode'];
+    const searchMode = document.getElementById('searchMode');
+    console.log(mode);
+    if(mode === 'Text'){
+        searchMode.value = 'Text';
+        const event = new Event("change");
+        searchMode.dispatchEvent(event);
+
+        const textQuery = document.getElementById('textQuery');
+        console.log(data['query'])
+        textQuery.value = data['query'].replaceAll("_", " ");
+        console.log(textQuery.value)
+    }else if (mode === "Sequence"){
+        searchMode.value = 'Sequence';
+        const event = new Event("change");
+        searchMode.dispatchEvent(event);
+
+        const seq1 = document.getElementById('sequence1');
+        const seq2 = document.getElementById('sequence2');
+        seq1.value = data['query1'].replaceAll("_", " ");
+        seq2.value = data['query2'].replaceAll("_", " ");
+    }else if (mode === "Image"){
+        searchMode.value = 'Image';
+        const event = new Event("change");
+        searchMode.dispatchEvent(event);
+
+        const img = document.getElementById('imgQuery');
+        const youtubeUrl = document.getElementById('youtubeUrl');
+        img.value = data['query'];
+        let keyframe = data['keyframe_id'];
+        document.cookie = "keyframe_id="+ keyframe;
+        youtubeUrl.value = data['youtube_url'];
+    }
+}
+function show_list_segment(id) {
+    // window.location.href = "/showsegment?imgid=" + id;
+    window.open("/showsegment?imgid=" + id);
+}
+
+function writecsv(id, info_key) {
+    hoverImg[id].style.border = "4px solid red";
+
+    console.log("info_key: " + info_key);
+    var mode_write_csv = document.getElementById("mode_write_csv").value;
+    console.log("mode_write_csv: " + mode_write_csv);
+    var info = {};
+    $.ajax({
+    url: "writecsv?info_key=" + info_key + "&mode=" + mode_write_csv,
+    type: 'GET',
+    async: false,
+    dataType: 'json',
+    success: function(res) {
+        console.log("res: ", res);
+        info = res;
+    }
+    });
+
+    str_fname = info["str_fname"]
+    console.log("str_fname: " + str_fname);
+    number_line = info["number_line"]
+    my_alert = str_fname + ' ### number csv line: ' + number_line
+
+    // hoverImg[id].style.border="4px solid red";
+
+    alert("write list shot: " + my_alert);
+}
+
+function visualize() {
+    var number_of_query = document.getElementById('number_of_query').value;
+    console.log("number_of_query: " + number_of_query);
+    window.location.href = "visualize?number_of_query=" + number_of_query;
+}
+
+function search_image_path() {
+    frame_path = document.getElementById('search_image_path').value;
+
+    window.open("/search_image_path?frame_path=" + frame_path)
+
+}
+
+function search() {
+    text_query = document.getElementById('text_query').value;
+
+    window.location.href = "/textsearch?textquery=" + text_query;
+
+    document.getElementById('text_query').innerHTML = text_query;
+}
+
+function search_asr() {
+    text_asr = document.getElementById('text_asr').value;
+
+    window.open("/asrsearch?text_asr=" + text_asr);
+}
+
+function ocr_filter() {
+    ocr_query = document.getElementById('ocr_filter').value;
+    console.log(ocr_query);
+    window.open("/ocrfilter?text_ocr=" + ocr_query);
+}
+
+function sequence_search() {
+    text_query = document.getElementById('text_query').value;
+    seq_query = document.getElementById('sequence_search').value;
+    console.log(seq_query);
+    window.open("/sequencesearch?text_start=" + text_query + '&text_nextframes=' + seq_query);
+}
+
+function reset() {
+    alert("Clean file submit.csv");
+    window.location.href = "http://0.0.0.0:5001/thumbnailimg?index=0";
+    // window.location.href = "http://127.0.0.1:5001/thumbnailimg?index=0"
+}
+
+function download_btn() {
+    // window.location.href = "dowload_submit_file?filename=submit.csv"
+    $.ajax({
+        type: "GET",
+        url: "get_first_row",
+        dataType: "json",
+        success: function(data) {
+            if (data["video_id"] != "None") {
+                $.ajax({
+                    url: "https://eventretrieval.one/api/v1/submit?item=" + data.video_id + "&frame=" + data.frame_id + "&session=node0daps0nu1p57w1xda7c5bybauu3047",
+                    type: "GET",
+                    dataType: "json",
+                    success: function(result) {
+                        alert(result.description);
+                    },
+                    error: function(error) {
+                        var status = error.status;
+                        if (status == 412) {
+                            alert("Duplicate or Wrong Format");
+                        } else if (status == 401) {
+                            alert("Unauthorized Error");
+                        }
+                    }
+                });
+            } else {
+                alert("Video None")
+            }
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            alert("Status: " + xhr.status + "     Error: " + thrownError);
+        }
+    });
+}
+    </script>
+    <script>
+
+document.addEventListener('DOMContentLoaded', function () {
+    const searchBar = document.getElementsByClassName('sticky-search-bar')[0];
+
+    const searchMode = document.getElementById('searchMode');
+    const textSearch = document.getElementById('textSearch');
+    const sequenceSearch = document.getElementById('sequenceSearch');
+    const sequenceSearch2 = document.getElementById('sequenceSearch2');
+    const bertSearch = document.getElementById('bertSearch');
+    const imgSearch = document.getElementById('imgSearch');
+    const youtubeExport = document.getElementById('youtubeExport');
+
+    const searchButton = document.getElementById('searchButton');
+    const browseButton = document.getElementById('browseButton');
+    const submitButton = document.getElementById('submitButton');
+
+    searchMode.addEventListener('change', function () {
+        if (searchMode.value === 'Text') {
+            searchBar.style.background = "#3F0D12";
+
+            textSearch.style.display = 'flex';
+            sequenceSearch.style.display = 'none';
+            sequenceSearch2.style.display = 'none';
+            bertSearch.style.display = 'none';
+            imgSearch.style.display = 'none';
+            youtubeExport.style.display = 'none';
+        } else if (searchMode.value === 'Sequence') {
+            searchBar.style.background = "#DCA03C";
+
+            textSearch.style.display = 'none';
+            sequenceSearch.style.display = 'block';
+            sequenceSearch2.style.display = 'block';
+            bertSearch.style.display = 'none';
+            imgSearch.style.display = 'none';
+            youtubeExport.style.display = 'none';
+        } else if (searchMode.value === 'Bert') {
+            searchBar.style.background = "#917245";
+
+            textSearch.style.display = 'none';
+            sequenceSearch.style.display = 'none';
+            sequenceSearch2.style.display = 'none';
+            bertSearch.style.display = 'block';
+            imgSearch.style.display = 'none';
+            youtubeExport.style.display = 'none';
+        } else if (searchMode.value === 'Image') {
+            searchBar.style.background = "#8E971E";
+
+            textSearch.style.display = 'none';
+            sequenceSearch.style.display = 'none';
+            sequenceSearch2.style.display = 'none';
+            bertSearch.style.display = 'none';
+            imgSearch.style.display = 'flex';
+            youtubeExport.style.display = 'flex';
+        }
+    });
+
+    searchButton.addEventListener('click', function () {
+        const k_value = document.getElementById('k_value').value;
+
+        if (searchMode.value === 'Text') {
+            const textQuery = document.getElementById('textQuery').value;
+            const filter = current_val.join(',');
+            const threshold = document.getElementById('threshold').value;
+            const operator = document.getElementById('operator').value;
+            if (textQuery === ""){
+                return;
+            }
+            if (current_val.length === 0){
+                window.location.href = "/textsearch?textquery=" + textQuery + "&k_value=" + k_value;
+            }else{
+                window.location.href = "/objectfilter?textquery=" + textQuery + "&objects=" + filter + "&k_value=" + k_value + "&threshold=" + threshold + "&operator=" + operator;
+            }
+        } else if (searchMode.value === 'Sequence') {
+            const sequence1 = document.getElementById('sequence1').value;
+            const sequence2 = document.getElementById('sequence2').value;
+            if (sequence1 === "" || sequence2 === ""){
+                return;
+            }
+            window.location.href = "/sequencesearch?text_start=" + sequence1 + '&text_nextframes=' + sequence2 + "&k_value=" + k_value;
+            // window.open("/sequencesearch?text_start=" + sequence1 + '&text_nextframes=' + sequence2 + "&k_value=" + k_value);
+        } else if (searchMode.value === 'Bert') {
+            const sequence1 = document.getElementById('bertQuery').value;
+            console.log('Bert Search Query:', bertSearch);
+            // Handle search logic for Mode 2 using sequence1 and sequence2
+        } else if (searchMode.value === 'Image') {
+            const imagePath = document.getElementById('imgQuery').value;
+            if (imagePath === ""){
+                return;
+            }
+            // window.location.href = "/search_image_path?frame_path=" + imagePath + "&k_value=" + k_value;
+            window.open("/search_image_path?frame_path=" + imagePath + "&k_value=" + k_value)
+        }
+    });
+
+    browseButton.addEventListener('click', function(){
+        const youtubeUrl = document.getElementById('youtubeUrl').value;
+        window.open(youtubeUrl);
+    })
+
+    function getCookie(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for(let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+    submitButton.addEventListener('click', function(){
+        const imagePath = document.getElementById('imgQuery').value;
+        const frame = getCookie("keyframe_id");
+        const result = window.confirm("Are you sure you want to submit this image?\nimage id: "+ imagePath + "\nimage keyframe: "+ frame);
+        if (result) {
+            fetch('http://127.0.0.1:5001/submit_img?id='+imagePath+'&frame='+frame)
+                .then(response => {
+                    if (!response.ok) {
+                        alert(`HTTP error! Status: ${response.status}`)
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json(); // Parse the JSON response
+                })
+                .then(data => {
+                    const responseString = JSON.stringify(data, null, 2);
+                    alert(responseString); // This will log the JSON response to the console
+                })
+                .catch(error => {
+                    console.error("Fetch error:", error);
+                });
+        } else {
+            //alert("");
+        }
+    })
+
+    const inputFields = document.querySelectorAll('input');
+
+// Add a keydown event listener to each input field
+    inputFields.forEach(function(inputField) {
+        inputField.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                document.getElementById('searchButton').click(); // Trigger a click on the button
+            }
+        });
+    });
+
+});
+
+
+    </script>
+    <script>
+        var MultiSelect2=function(){const t={value:"data-value",disabled:"data-disabled",class:"class",type:"type",info:"data-info",action:"data-action"};class e{constructor(t,e={},s={}){return this._node=t instanceof HTMLElement?t:document.createElement(t),this._config={i18n:s},this._setAttributes(e),e.textContent&&this._setTextContent(e.textContent),this}get(){return this._node}append(t){return this._node.appendChild(t),this}addClass(t){return this._node.classList.add(t),this}removeClass(t){return this._node.classList.remove(t),this}toggleClass(t){return this._node.classList.toggle(t),this}addEventListener(t,e){return this._node.addEventListener(t,e),this}removeEventListener(t,e){return this._node.removeEventListener(t,e),this}setText(t){return this._setTextContent(t),this}getHeight(){return window.getComputedStyle(this._node).height}setTop(t){return this._node.style.top=`${t}px`,this}focus(){return this._node.focus(),this}_setTextContent(t){this._node.textContent=t}_setAttributes(e){for(const s in e)t[s]&&e[s]&&this._setAttribute(t[s],e[s])}_setAttribute(t,e){this._node.setAttribute(t,e)}}return class{constructor(t,s){this._config={...s},this._state={opened:!1},this._icons=[],this.currentFocus=-1,this._boundHandleClick=this._handleClick.bind(this),this._boundUnselectOption=this._unselectOption.bind(this),this._boundSortOptions=this._sortOptions.bind(this),this._boundArrows=this._arrows.bind(this),this._body=new e(document.body),this._create(t),this._setValue()}_create(t){const s="string"==typeof t?document.querySelector(t):t;this._parent=new e(s),this._select=new e("div",{class:"multi-select__select"}),this._selected_value=new e("span",{class:"multi-select__label"}),this._optionsDiv=new e("div",{class:"multi-select__options"}),this._select.append(this._selected_value.get()),this._select.append(this._optionsDiv.get()),this._parent.append(this._select.get()),this._options=this._generateOptionsOfSelect(),this._select.addEventListener("click",this._boundHandleClick),this._config.multiple&&this._select.addClass("multi-select__select--multiple")}_generateOptionsOfSelect(){return this._config.autocomplete&&(this._autocomplete=new e("input",{class:"multi-select__autocomplete",type:"text"}),this._autocomplete.addEventListener("input",this._boundSortOptions),this._autocomplete.addEventListener("keydown",this._boundArrows),this._optionsDiv.append(this._autocomplete.get())),this._config.options.map(t=>{const s=new e("div",{class:"multi-select__option",value:t.value,textContent:t.label,disabled:t.disabled,info:t.info,action:t.action});return this._optionsDiv.append(s.get()),s})}_handleClick(t){if(this._firstActive(),t.stopPropagation(),this._closeAllLists(),"multi-select__autocomplete"!==t.target.className){if(this._state.opened){const e=this._options.find(e=>e.get()===t.target);return e&&this._setValue(e.get().getAttribute("data-value"),!0),this._select.removeClass("multi-select__select--opened"),this._body.removeEventListener("click",this._boundHandleClick),this._select.addEventListener("click",this._boundHandleClick),void(this._state.opened=!1)}"fa "+t.target.parentElement.classList[1]!==this._config.icon?"I"!==t.target.tagName&&"svg"!==t.target.tagName?(this._select.addClass("multi-select__select--opened"),this._body.addEventListener("click",this._boundHandleClick),this._select.removeEventListener("click",this._boundHandleClick),this._state.opened=!0,this._autocomplete&&this._autocomplete.focus()):this._unselectOption(t.target.getAttribute("data-value")):this._unselectOption(t.target.parentElement.getAttribute("data-value"))}}_setValue(t,e,s){if(t&&!s&&(this._config.value=this._config.multiple?this._config.value.concat(t):t),t&&s&&(this._config.value=t),this._options.forEach(t=>{t.removeClass("multi-select__option--selected")}),this._config.multiple){const t=this._config.value.map(t=>{const e=this._config.options.find(e=>e.value===t);return this._options.find(t=>t.get().getAttribute("data-value")===e.value.toString()).addClass("multi-select__option--selected"),e});return void this._selectOptions(t,e)}if(!this._config.options.length)return;const i=this._config.value?this._config.options.find(t=>t.value.toString()===this._config.value):"";if(""!==i){this._options.find(t=>t.get().getAttribute("data-value")===i.value.toString()).addClass("multi-select__option--selected"),this._selectOption(i,e)}}_selectOption(t,e){this._selectedOption=t,this._selected_value.setText(t.label),this._config.onChange&&e&&this._config.onChange(t.value)}_selectOptions(t,s){this._selected_value.setText(""),this._icons=t.map(t=>{const s=new e("span",{class:"multi-select__selected-label",textContent:t.label}),i=new e("i",{class:this._config.icon,value:t.value});return s.append(i.get()),this._selected_value.append(s.get()),i.get()}),s&&this._optionsDiv.setTop(Number(this._select.getHeight().split("px")[0])+5),this._config.onChange&&s&&this._config.onChange(this._config.value)}_unselectOption(t){const e=[...this._config.value];let s;-1!==(s=t.target?e.indexOf(t.target.getAttribute("data-value")):e.indexOf(t))&&e.splice(s,1),this._setValue(e,!0,!0)}_sortOptions(t){this._options.forEach(e=>{e.get().textContent.toLowerCase().includes(t.target.value.toLowerCase())?e.removeClass("multi-select__option--hidden"):e.addClass("multi-select__option--hidden")}),this._firstActive()}_visibleOptions(){return this._optionsDiv.get().querySelectorAll("div.multi-select__option:not(.multi-select__option--hidden)")}_unselectedOptions(){return this._optionsDiv.get().querySelectorAll("div.multi-select__option:not(.multi-select__option--selected):not(.multi-select__option--hidden)")}_selectedOptions(){return this._optionsDiv.get().querySelectorAll(".multi-select__option--selected")}_arrows(t){let e=this._visibleOptions();40==t.keyCode?(this._nextUnselected(e),this._addActive(e)):38==t.keyCode?(this._previousUnselected(e),this._addActive(e)):13!=t.keyCode&&9!=t.keyCode||(t.preventDefault(),this.currentFocus>-1&&(e&&e[this.currentFocus].click(),this._removeActive(e)))}_addActive(t){if(!t)return!1;this._removeActive(t),this._listEndingCheck(t),t[this.currentFocus].classList.add("multi-select__option-active"),t[this.currentFocus].scrollIntoView()}_removeActive(t){for(var e=0;e<t.length;e++)t[e].classList.remove("multi-select__option-active")}_nextUnselected(t){for(this.currentFocus++;t[this.currentFocus]&&t[this.currentFocus].classList.contains("multi-select__option--selected");)this.currentFocus++}_previousUnselected(t){for(this.currentFocus--;t[this.currentFocus]&&t[this.currentFocus].classList.contains("multi-select__option--selected");)this.currentFocus--}_listEndingCheck(t){this.currentFocus>=t.length&&(this.currentFocus=-1,this._nextUnselected(t)),this.currentFocus<0&&(this.currentFocus=t.length,this._previousUnselected(t))}_firstActive(){this.currentFocus=-1,this._removeActive(this._visibleOptions()),this._config.autocomplete&&this._unselectedOptions().length>0&&(this._nextUnselected(this._visibleOptions()),this._visibleOptions()[this.currentFocus].classList.add("multi-select__option-active"))}_closeAllLists(){let t=document.getElementsByClassName("multi-select__select");for(let e=0;e<t.length;e++)t[e]!==this._select.get()&&t[e].classList.contains("multi-select__select--opened")&&t[e].classList.remove("multi-select__select--opened")}}}();
+    </script>
+    <script>
+const myOptions = [
+  {
+    "label": "Accordion - Đàn xếp",
+    "value": "Accordion"
+  },
+  {
+    "label": "Adhesive tape - Băng dính",
+    "value": "Adhesive tape"
+  },
+  {
+    "label": "Aircraft - Phi cơ",
+    "value": "Aircraft"
+  },
+  {
+    "label": "Airplane - Máy bay",
+    "value": "Airplane"
+  },
+  {
+    "label": "Alarm clock - Đồng hồ báo thức",
+    "value": "Alarm clock"
+  },
+  {
+    "label": "Alpaca - Lạc đà",
+    "value": "Alpaca"
+  },
+  {
+    "label": "Ambulance - Xe cứu thương",
+    "value": "Ambulance"
+  },
+  {
+    "label": "Animal - Động vật",
+    "value": "Animal"
+  },
+  {
+    "label": "Ant - Con kiến",
+    "value": "Ant"
+  },
+  {
+    "label": "Antelope - con linh dương",
+    "value": "Antelope"
+  },
+  {
+    "label": "Apple - Quả táo",
+    "value": "Apple"
+  },
+  {
+    "label": "Armadillo - Tatu chín đai",
+    "value": "Armadillo"
+  },
+  {
+    "label": "Artichoke - Atisô",
+    "value": "Artichoke"
+  },
+  {
+    "label": "Asparagus - Măng tây",
+    "value": "Asparagus"
+  },
+  {
+    "label": "Auto part - Phần này",
+    "value": "Auto part"
+  },
+  {
+    "label": "Axe - Cây rìu",
+    "value": "Axe"
+  },
+  {
+    "label": "Backpack - Balo",
+    "value": "Backpack"
+  },
+  {
+    "label": "Bagel - bánh mì tròn",
+    "value": "Bagel"
+  },
+  {
+    "label": "Baked goods - Đồ nướng",
+    "value": "Baked goods"
+  },
+  {
+    "label": "Ball - Quả bóng",
+    "value": "Ball"
+  },
+  {
+    "label": "Balloon - Bóng bay",
+    "value": "Balloon"
+  },
+  {
+    "label": "Banana - Chuối",
+    "value": "Banana"
+  },
+  {
+    "label": "Banjo - đàn banjo",
+    "value": "Banjo"
+  },
+  {
+    "label": "Barge - xà lan",
+    "value": "Barge"
+  },
+  {
+    "label": "Barrel - Thùng",
+    "value": "Barrel"
+  },
+  {
+    "label": "Baseball bat - Gậy bóng chày",
+    "value": "Baseball bat"
+  },
+  {
+    "label": "Baseball glove - Găng tay bóng chày",
+    "value": "Baseball glove"
+  },
+  {
+    "label": "Bat - Một",
+    "value": "Bat"
+  },
+  {
+    "label": "Bathroom accessory - Phụ kiện phòng tắm",
+    "value": "Bathroom accessory"
+  },
+  {
+    "label": "Bathroom cabinet - Tủ phòng tắm",
+    "value": "Bathroom cabinet"
+  },
+  {
+    "label": "Bathtub - Bồn tắm",
+    "value": "Bathtub"
+  },
+  {
+    "label": "Beaker - cốc thủy tinh",
+    "value": "Beaker"
+  },
+  {
+    "label": "Bear - Con gấu",
+    "value": "Bear"
+  },
+  {
+    "label": "Bed - Giường",
+    "value": "Bed"
+  },
+  {
+    "label": "Bee - Con ong",
+    "value": "Bee"
+  },
+  {
+    "label": "Beehive - Tổ ong",
+    "value": "Beehive"
+  },
+  {
+    "label": "Beer - Bia",
+    "value": "Beer"
+  },
+  {
+    "label": "Beetle - Bọ cánh cứng",
+    "value": "Beetle"
+  },
+  {
+    "label": "Bell pepper - ớt chuông",
+    "value": "Bell pepper"
+  },
+  {
+    "label": "Belt - Thắt lưng",
+    "value": "Belt"
+  },
+  {
+    "label": "Bench - Băng ghế",
+    "value": "Bench"
+  },
+  {
+    "label": "Bicycle - Xe đạp",
+    "value": "Bicycle"
+  },
+  {
+    "label": "Bicycle helmet - Mũ bảo hiểm xe đạp",
+    "value": "Bicycle helmet"
+  },
+  {
+    "label": "Bicycle wheel - Bánh xe đạp",
+    "value": "Bicycle wheel"
+  },
+  {
+    "label": "Bidet - chậu vệ sinh",
+    "value": "Bidet"
+  },
+  {
+    "label": "Billboard - Biển quảng cáo",
+    "value": "Billboard"
+  },
+  {
+    "label": "Billiard table - Bàn bi-a",
+    "value": "Billiard table"
+  },
+  {
+    "label": "Binoculars - Ống nhòm",
+    "value": "Binoculars"
+  },
+  {
+    "label": "Bird - Chim",
+    "value": "Bird"
+  },
+  {
+    "label": "Blender - Máy xay",
+    "value": "Blender"
+  },
+  {
+    "label": "Blue jay - Chim giẻ cùi xanh",
+    "value": "Blue jay"
+  },
+  {
+    "label": "Boat - Thuyền",
+    "value": "Boat"
+  },
+  {
+    "label": "Book - Sách",
+    "value": "Book"
+  },
+  {
+    "label": "Bookcase - Tủ sách",
+    "value": "Bookcase"
+  },
+  {
+    "label": "Boot - Khởi động",
+    "value": "Boot"
+  },
+  {
+    "label": "Bottle - Cái chai",
+    "value": "Bottle"
+  },
+  {
+    "label": "Bow and arrow - Cung và tên",
+    "value": "Bow and arrow"
+  },
+  {
+    "label": "Bowl - Cái bát",
+    "value": "Bowl"
+  },
+  {
+    "label": "Bowling equipment - Thiết bị chơi bowling",
+    "value": "Bowling equipment"
+  },
+  {
+    "label": "Box - Hộp",
+    "value": "Box"
+  },
+  {
+    "label": "Boy - Con trai",
+    "value": "Boy"
+  },
+  {
+    "label": "Brassiere - Áo lót",
+    "value": "Brassiere"
+  },
+  {
+    "label": "Bread - Bánh mỳ",
+    "value": "Bread"
+  },
+  {
+    "label": "Briefcase - Va li công tác",
+    "value": "Briefcase"
+  },
+  {
+    "label": "Broccoli - Bông cải xanh",
+    "value": "Broccoli"
+  },
+  {
+    "label": "Bronze sculpture - Điêu khắc đồng",
+    "value": "Bronze sculpture"
+  },
+  {
+    "label": "Brown bear - gấu nâu",
+    "value": "Brown bear"
+  },
+  {
+    "label": "Building - Xây dựng",
+    "value": "Building"
+  },
+  {
+    "label": "Bull - Bò đực",
+    "value": "Bull"
+  },
+  {
+    "label": "Burrito - bánh burrito",
+    "value": "Burrito"
+  },
+  {
+    "label": "Bus - Xe buýt",
+    "value": "Bus"
+  },
+  {
+    "label": "Bust - Bật ra",
+    "value": "Bust"
+  },
+  {
+    "label": "Butterfly - Bươm bướm",
+    "value": "Butterfly"
+  },
+  {
+    "label": "Cabbage - Bắp cải",
+    "value": "Cabbage"
+  },
+  {
+    "label": "Cabinetry - tủ đựng đồ",
+    "value": "Cabinetry"
+  },
+  {
+    "label": "Cake - Bánh ngọt",
+    "value": "Cake"
+  },
+  {
+    "label": "Cake stand - Đế bánh",
+    "value": "Cake stand"
+  },
+  {
+    "label": "Calculator - Máy tính",
+    "value": "Calculator"
+  },
+  {
+    "label": "Camel - Con lạc đà",
+    "value": "Camel"
+  },
+  {
+    "label": "Camera - Máy ảnh",
+    "value": "Camera"
+  },
+  {
+    "label": "Canary - chim hoàng yến",
+    "value": "Canary"
+  },
+  {
+    "label": "Candle - Nến",
+    "value": "Candle"
+  },
+  {
+    "label": "Candy - Kẹo",
+    "value": "Candy"
+  },
+  {
+    "label": "Cannon - Pháo",
+    "value": "Cannon"
+  },
+  {
+    "label": "Canoe - Ca nô",
+    "value": "Canoe"
+  },
+  {
+    "label": "Cantaloupe - Dưa lưới",
+    "value": "Cantaloupe"
+  },
+  {
+    "label": "Car - Xe hơi",
+    "value": "Car"
+  },
+  {
+    "label": "Carnivore - Động vật ăn thịt",
+    "value": "Carnivore"
+  },
+  {
+    "label": "Carrot - cà rốt",
+    "value": "Carrot"
+  },
+  {
+    "label": "Cart - Xe đẩy",
+    "value": "Cart"
+  },
+  {
+    "label": "Cassette deck - băng cassette",
+    "value": "Cassette deck"
+  },
+  {
+    "label": "Castle - Lâu đài",
+    "value": "Castle"
+  },
+  {
+    "label": "Cat - Con mèo",
+    "value": "Cat"
+  },
+  {
+    "label": "Cat furniture - Nội thất mèo",
+    "value": "Cat furniture"
+  },
+  {
+    "label": "Caterpillar - sâu bướm",
+    "value": "Caterpillar"
+  },
+  {
+    "label": "Cattle - Gia súc",
+    "value": "Cattle"
+  },
+  {
+    "label": "Ceiling fan - quạt trần",
+    "value": "Ceiling fan"
+  },
+  {
+    "label": "Cello - Đàn Trung Hồ cầm",
+    "value": "Cello"
+  },
+  {
+    "label": "Centipede - con rết",
+    "value": "Centipede"
+  },
+  {
+    "label": "Chainsaw - Máy cưa",
+    "value": "Chainsaw"
+  },
+  {
+    "label": "Chair - Cái ghế",
+    "value": "Chair"
+  },
+  {
+    "label": "Cheese - Phô mai",
+    "value": "Cheese"
+  },
+  {
+    "label": "Cheetah - con báo",
+    "value": "Cheetah"
+  },
+  {
+    "label": "Chest of drawers - Tủ ngăn kéo",
+    "value": "Chest of drawers"
+  },
+  {
+    "label": "Chicken - Thịt gà",
+    "value": "Chicken"
+  },
+  {
+    "label": "Chisel - Đục",
+    "value": "Chisel"
+  },
+  {
+    "label": "Chopsticks - Đũa",
+    "value": "Chopsticks"
+  },
+  {
+    "label": "Christmas tree - cây thông giáng sinh",
+    "value": "Christmas tree"
+  },
+  {
+    "label": "Clock - Cái đồng hồ",
+    "value": "Clock"
+  },
+  {
+    "label": "Closet - Buồng nhỏ",
+    "value": "Closet"
+  },
+  {
+    "label": "Clothing - Quần áo",
+    "value": "Clothing"
+  },
+  {
+    "label": "Coat - Áo choàng",
+    "value": "Coat"
+  },
+  {
+    "label": "Cocktail - Cocktail",
+    "value": "Cocktail"
+  },
+  {
+    "label": "Cocktail shaker - Bình lắc cocktail",
+    "value": "Cocktail shaker"
+  },
+  {
+    "label": "Coconut - Dừa",
+    "value": "Coconut"
+  },
+  {
+    "label": "Coffee - Cà phê",
+    "value": "Coffee"
+  },
+  {
+    "label": "Coffee cup - Tách cà phê",
+    "value": "Coffee cup"
+  },
+  {
+    "label": "Coffee table - Bàn café",
+    "value": "Coffee table"
+  },
+  {
+    "label": "Coffeemaker - Máy pha cà phê",
+    "value": "Coffeemaker"
+  },
+  {
+    "label": "Coin - Đồng tiền",
+    "value": "Coin"
+  },
+  {
+    "label": "Common fig - sung ngọt",
+    "value": "Common fig"
+  },
+  {
+    "label": "Computer keyboard - Bàn phím máy tính",
+    "value": "Computer keyboard"
+  },
+  {
+    "label": "Computer monitor - Màn hình máy tính",
+    "value": "Computer monitor"
+  },
+  {
+    "label": "Computer mouse - Chuột máy tính",
+    "value": "Computer mouse"
+  },
+  {
+    "label": "Convenience store - Cửa hàng tiện dụng",
+    "value": "Convenience store"
+  },
+  {
+    "label": "Cookie - Bánh quy",
+    "value": "Cookie"
+  },
+  {
+    "label": "Corded phone - Điện thoại có dây",
+    "value": "Corded phone"
+  },
+  {
+    "label": "Cosmetics - Mỹ phẩm",
+    "value": "Cosmetics"
+  },
+  {
+    "label": "Couch - Đi văng",
+    "value": "Couch"
+  },
+  {
+    "label": "Countertop - Mặt bàn",
+    "value": "Countertop"
+  },
+  {
+    "label": "Cowboy hat - Nón cao bồi",
+    "value": "Cowboy hat"
+  },
+  {
+    "label": "Crab - Cua",
+    "value": "Crab"
+  },
+  {
+    "label": "Cream - Kem",
+    "value": "Cream"
+  },
+  {
+    "label": "Cricket ball - Bóng cricket",
+    "value": "Cricket ball"
+  },
+  {
+    "label": "Crocodile - Cá sấu",
+    "value": "Crocodile"
+  },
+  {
+    "label": "Croissant - bánh sừng bò",
+    "value": "Croissant"
+  },
+  {
+    "label": "Crown - Vương miện",
+    "value": "Crown"
+  },
+  {
+    "label": "Cucumber - Quả dưa chuột",
+    "value": "Cucumber"
+  },
+  {
+    "label": "Cupboard - Cái tủ",
+    "value": "Cupboard"
+  },
+  {
+    "label": "Curtain - Tấm màn",
+    "value": "Curtain"
+  },
+  {
+    "label": "Cutting board - Thớt",
+    "value": "Cutting board"
+  },
+  {
+    "label": "Dagger - Dao găm",
+    "value": "Dagger"
+  },
+  {
+    "label": "Dairy - Sản phẩm bơ sữa",
+    "value": "Dairy"
+  },
+  {
+    "label": "Deer - Con nai",
+    "value": "Deer"
+  },
+  {
+    "label": "Desk - Bàn làm việc",
+    "value": "Desk"
+  },
+  {
+    "label": "Dessert - Món tráng miệng",
+    "value": "Dessert"
+  },
+  {
+    "label": "Diaper - Tã",
+    "value": "Diaper"
+  },
+  {
+    "label": "Dice - Xúc xắc",
+    "value": "Dice"
+  },
+  {
+    "label": "Digital clock - Đồng hồ kỹ thuật số",
+    "value": "Digital clock"
+  },
+  {
+    "label": "Dinosaur - khủng long",
+    "value": "Dinosaur"
+  },
+  {
+    "label": "Dishwasher - Máy rửa chén",
+    "value": "Dishwasher"
+  },
+  {
+    "label": "Dog - Chó",
+    "value": "Dog"
+  },
+  {
+    "label": "Dog bed - Giường chó",
+    "value": "Dog bed"
+  },
+  {
+    "label": "Doll - BÚP BÊ",
+    "value": "Doll"
+  },
+  {
+    "label": "Dolphin - Cá heo",
+    "value": "Dolphin"
+  },
+  {
+    "label": "Door - Cửa",
+    "value": "Door"
+  },
+  {
+    "label": "Door handle - Tay nắm cửa",
+    "value": "Door handle"
+  },
+  {
+    "label": "Doughnut - Bánh vòng",
+    "value": "Doughnut"
+  },
+  {
+    "label": "Dragonfly - con chuồn chuồn",
+    "value": "Dragonfly"
+  },
+  {
+    "label": "Drawer - Ngăn kéo",
+    "value": "Drawer"
+  },
+  {
+    "label": "Dress - Đầm",
+    "value": "Dress"
+  },
+  {
+    "label": "Drill - Máy khoan",
+    "value": "Drill"
+  },
+  {
+    "label": "Drink - Uống",
+    "value": "Drink"
+  },
+  {
+    "label": "Drinking straw - Ống hút",
+    "value": "Drinking straw"
+  },
+  {
+    "label": "Drum - Cái trống",
+    "value": "Drum"
+  },
+  {
+    "label": "Duck - Con vịt",
+    "value": "Duck"
+  },
+  {
+    "label": "Dumbbell - Chuông hư",
+    "value": "Dumbbell"
+  },
+  {
+    "label": "Eagle - chim ưng",
+    "value": "Eagle"
+  },
+  {
+    "label": "Earrings - Hoa tai",
+    "value": "Earrings"
+  },
+  {
+    "label": "Egg - Trứng",
+    "value": "Egg"
+  },
+  {
+    "label": "Elephant - Con voi",
+    "value": "Elephant"
+  },
+  {
+    "label": "Envelope - Phong bì",
+    "value": "Envelope"
+  },
+  {
+    "label": "Falcon - Chim ưng",
+    "value": "Falcon"
+  },
+  {
+    "label": "Fashion accessory - Phụ kiện thời trang",
+    "value": "Fashion accessory"
+  },
+  {
+    "label": "Fast food - Thức ăn nhanh",
+    "value": "Fast food"
+  },
+  {
+    "label": "Fedora - Fedora",
+    "value": "Fedora"
+  },
+  {
+    "label": "Filing cabinet - Tủ hồ sơ",
+    "value": "Filing cabinet"
+  },
+  {
+    "label": "Fire hydrant - Vòi chữa cháy",
+    "value": "Fire hydrant"
+  },
+  {
+    "label": "Fireplace - Lò sưởi",
+    "value": "Fireplace"
+  },
+  {
+    "label": "Fish - Cá",
+    "value": "Fish"
+  },
+  {
+    "label": "Flag - Lá cờ",
+    "value": "Flag"
+  },
+  {
+    "label": "Flashlight - Đèn pin",
+    "value": "Flashlight"
+  },
+  {
+    "label": "Flower - Hoa",
+    "value": "Flower"
+  },
+  {
+    "label": "Flowerpot - Chậu hoa",
+    "value": "Flowerpot"
+  },
+  {
+    "label": "Flute - Ống sáo",
+    "value": "Flute"
+  },
+  {
+    "label": "Flying disc - Đĩa bay",
+    "value": "Flying disc"
+  },
+  {
+    "label": "Food - Đồ ăn",
+    "value": "Food"
+  },
+  {
+    "label": "Food processor - Người chuyển lương thực",
+    "value": "Food processor"
+  },
+  {
+    "label": "Football - Bóng đá",
+    "value": "Football"
+  },
+  {
+    "label": "Football helmet - Mũ bảo hiểm bóng đá",
+    "value": "Football helmet"
+  },
+  {
+    "label": "Footwear - giày dép",
+    "value": "Footwear"
+  },
+  {
+    "label": "Fork - Cái nĩa",
+    "value": "Fork"
+  },
+  {
+    "label": "Fountain - Đài phun nước",
+    "value": "Fountain"
+  },
+  {
+    "label": "Fox - cáo",
+    "value": "Fox"
+  },
+  {
+    "label": "Frog - Con ếch",
+    "value": "Frog"
+  },
+  {
+    "label": "Fruit - Hoa quả",
+    "value": "Fruit"
+  },
+  {
+    "label": "Frying pan - Cái quạt",
+    "value": "Frying pan"
+  },
+  {
+    "label": "Furniture - Nội thất",
+    "value": "Furniture"
+  },
+  {
+    "label": "Gas stove - Lò ga",
+    "value": "Gas stove"
+  },
+  {
+    "label": "Giraffe - Hươu cao cổ",
+    "value": "Giraffe"
+  },
+  {
+    "label": "Girl - Con gái",
+    "value": "Girl"
+  },
+  {
+    "label": "Glasses - Kính",
+    "value": "Glasses"
+  },
+  {
+    "label": "Glove - Găng tay",
+    "value": "Glove"
+  },
+  {
+    "label": "Goat - Con dê",
+    "value": "Goat"
+  },
+  {
+    "label": "Goggles - Kính bảo hộ",
+    "value": "Goggles"
+  },
+  {
+    "label": "Goldfish - Cá vàng",
+    "value": "Goldfish"
+  },
+  {
+    "label": "Golf ball - Bóng golf",
+    "value": "Golf ball"
+  },
+  {
+    "label": "Golf cart - Xe golf",
+    "value": "Golf cart"
+  },
+  {
+    "label": "Gondola - thuyền gondola",
+    "value": "Gondola"
+  },
+  {
+    "label": "Goose - Ngỗng",
+    "value": "Goose"
+  },
+  {
+    "label": "Grape - Quả nho",
+    "value": "Grape"
+  },
+  {
+    "label": "Grapefruit - Bưởi",
+    "value": "Grapefruit"
+  },
+  {
+    "label": "Guacamole - Quả bơ",
+    "value": "Guacamole"
+  },
+  {
+    "label": "Guitar - Đàn ghi ta",
+    "value": "Guitar"
+  },
+  {
+    "label": "Hamburger - bánh hamburger",
+    "value": "Hamburger"
+  },
+  {
+    "label": "Hammer - cây búa",
+    "value": "Hammer"
+  },
+  {
+    "label": "Hamster - chuột đồng",
+    "value": "Hamster"
+  },
+  {
+    "label": "Hand dryer - Máy làm khô tay",
+    "value": "Hand dryer"
+  },
+  {
+    "label": "Handbag - Túi xách tay",
+    "value": "Handbag"
+  },
+  {
+    "label": "Handgun - súng ngắn",
+    "value": "Handgun"
+  },
+  {
+    "label": "Harbor seal - Bến cảng",
+    "value": "Harbor seal"
+  },
+  {
+    "label": "Harp - đàn hạc",
+    "value": "Harp"
+  },
+  {
+    "label": "Harpsichord - đàn harpsichord",
+    "value": "Harpsichord"
+  },
+  {
+    "label": "Hat - Có",
+    "value": "Hat"
+  },
+  {
+    "label": "Headphones - Tai nghe",
+    "value": "Headphones"
+  },
+  {
+    "label": "Heater - Máy sưởi",
+    "value": "Heater"
+  },
+  {
+    "label": "Hedgehog - nhím",
+    "value": "Hedgehog"
+  },
+  {
+    "label": "Helicopter - Trực thăng",
+    "value": "Helicopter"
+  },
+  {
+    "label": "Helmet - Mũ bảo hiểm",
+    "value": "Helmet"
+  },
+  {
+    "label": "High heels - Cao gót",
+    "value": "High heels"
+  },
+  {
+    "label": "Hiking equipment - Thiết bị đi bộ đường dài",
+    "value": "Hiking equipment"
+  },
+  {
+    "label": "Hippopotamus - Hà mã",
+    "value": "Hippopotamus"
+  },
+  {
+    "label": "Home appliance - Dụng cụ gia đình",
+    "value": "Home appliance"
+  },
+  {
+    "label": "Honeycomb - Tổ ong",
+    "value": "Honeycomb"
+  },
+  {
+    "label": "Horn - sừng",
+    "value": "Horn"
+  },
+  {
+    "label": "Horse - Ngựa",
+    "value": "Horse"
+  },
+  {
+    "label": "Hot dog - Bánh mì kẹp xúc xích",
+    "value": "Hot dog"
+  },
+  {
+    "label": "House - Căn nhà",
+    "value": "House"
+  },
+  {
+    "label": "Houseplant - Cây nhà",
+    "value": "Houseplant"
+  },
+  {
+    "label": "Human arm - Cánh tay con người",
+    "value": "Human arm"
+  },
+  {
+    "label": "Human beard - Râu người",
+    "value": "Human beard"
+  },
+  {
+    "label": "Human body - Cơ thể con người",
+    "value": "Human body"
+  },
+  {
+    "label": "Human ear - Tai người",
+    "value": "Human ear"
+  },
+  {
+    "label": "Human eye - Mắt người",
+    "value": "Human eye"
+  },
+  {
+    "label": "Human face - Mặt người",
+    "value": "Human face"
+  },
+  {
+    "label": "Human foot - Bàn chân con người",
+    "value": "Human foot"
+  },
+  {
+    "label": "Human hair - Tóc người",
+    "value": "Human hair"
+  },
+  {
+    "label": "Human hand - Bàn tay con người",
+    "value": "Human hand"
+  },
+  {
+    "label": "Human head - Đầu người",
+    "value": "Human head"
+  },
+  {
+    "label": "Human leg - Chân người",
+    "value": "Human leg"
+  },
+  {
+    "label": "Human mouth - Miệng người",
+    "value": "Human mouth"
+  },
+  {
+    "label": "Human nose - Mũi người",
+    "value": "Human nose"
+  },
+  {
+    "label": "Ice cream - Kem",
+    "value": "Ice cream"
+  },
+  {
+    "label": "Infant bed - Giường trẻ sơ sinh",
+    "value": "Infant bed"
+  },
+  {
+    "label": "Insect - Côn trùng",
+    "value": "Insect"
+  },
+  {
+    "label": "Invertebrate - Động vật không xương sống",
+    "value": "Invertebrate"
+  },
+  {
+    "label": "Ipod - Ipod",
+    "value": "Ipod"
+  },
+  {
+    "label": "Jacket - Áo khoác",
+    "value": "Jacket"
+  },
+  {
+    "label": "Jacuzzi - bể sục",
+    "value": "Jacuzzi"
+  },
+  {
+    "label": "Jaguar - báo đốm",
+    "value": "Jaguar"
+  },
+  {
+    "label": "Jeans - Quần jean",
+    "value": "Jeans"
+  },
+  {
+    "label": "Jellyfish - Con sứa",
+    "value": "Jellyfish"
+  },
+  {
+    "label": "Jet ski - máy bay phản lực trượt tuyết",
+    "value": "Jet ski"
+  },
+  {
+    "label": "Jug - Cái bình",
+    "value": "Jug"
+  },
+  {
+    "label": "Juice - Nước ép",
+    "value": "Juice"
+  },
+  {
+    "label": "Kangaroo - Con chuột túi",
+    "value": "Kangaroo"
+  },
+  {
+    "label": "Kettle - Ấm đun nước",
+    "value": "Kettle"
+  },
+  {
+    "label": "Kitchen & dining room table - Bàn bếp và phòng ăn",
+    "value": "Kitchen & dining room table"
+  },
+  {
+    "label": "Kitchen appliance - Thiết bị nhà bếp",
+    "value": "Kitchen appliance"
+  },
+  {
+    "label": "Kitchen knife - Dao làm bếp",
+    "value": "Kitchen knife"
+  },
+  {
+    "label": "Kitchen utensil - Dụng cụ nhà bếp",
+    "value": "Kitchen utensil"
+  },
+  {
+    "label": "Kite - Nhìn thấy",
+    "value": "Kite"
+  },
+  {
+    "label": "Knife - Dao",
+    "value": "Knife"
+  },
+  {
+    "label": "Koala - gấu túi",
+    "value": "Koala"
+  },
+  {
+    "label": "Ladder - Thang",
+    "value": "Ladder"
+  },
+  {
+    "label": "Ladybug - bọ rùa",
+    "value": "Ladybug"
+  },
+  {
+    "label": "Lamp - Đèn",
+    "value": "Lamp"
+  },
+  {
+    "label": "Land vehicle - Xe đất",
+    "value": "Land vehicle"
+  },
+  {
+    "label": "Lantern - đèn lồng",
+    "value": "Lantern"
+  },
+  {
+    "label": "Laptop - Máy tính xách tay",
+    "value": "Laptop"
+  },
+  {
+    "label": "Lavender - Hoa oải hương",
+    "value": "Lavender"
+  },
+  {
+    "label": "Lemon - Chanh vàng",
+    "value": "Lemon"
+  },
+  {
+    "label": "Leopard - Báo",
+    "value": "Leopard"
+  },
+  {
+    "label": "Lifejacket - Áo phao",
+    "value": "Lifejacket"
+  },
+  {
+    "label": "Light bulb - Bóng đèn",
+    "value": "Light bulb"
+  },
+  {
+    "label": "Light switch - Công tắc đèn",
+    "value": "Light switch"
+  },
+  {
+    "label": "Lighthouse - Ngọn hải đăng",
+    "value": "Lighthouse"
+  },
+  {
+    "label": "Lily - Hoa loa kèn",
+    "value": "Lily"
+  },
+  {
+    "label": "Limousine - Xe limousine",
+    "value": "Limousine"
+  },
+  {
+    "label": "Lion - Con sư tử",
+    "value": "Lion"
+  },
+  {
+    "label": "Lipstick - Son môi",
+    "value": "Lipstick"
+  },
+  {
+    "label": "Lizard - Con thằn lằn",
+    "value": "Lizard"
+  },
+  {
+    "label": "Lobster - tôm",
+    "value": "Lobster"
+  },
+  {
+    "label": "Loveseat - Ghế tình yêu",
+    "value": "Loveseat"
+  },
+  {
+    "label": "Luggage and bags - Hành lý và túi xách",
+    "value": "Luggage and bags"
+  },
+  {
+    "label": "Lynx - Linh miêu",
+    "value": "Lynx"
+  },
+  {
+    "label": "Magpie - Ác là",
+    "value": "Magpie"
+  },
+  {
+    "label": "Mammal - động vật có vú",
+    "value": "Mammal"
+  },
+  {
+    "label": "Man - Người đàn ông",
+    "value": "Man"
+  },
+  {
+    "label": "Mango - Quả xoài",
+    "value": "Mango"
+  },
+  {
+    "label": "Maple - Cây phong",
+    "value": "Maple"
+  },
+  {
+    "label": "Marine invertebrates - Động vật không xương sống biển",
+    "value": "Marine invertebrates"
+  },
+  {
+    "label": "Marine mammal - Động vật có vú biển",
+    "value": "Marine mammal"
+  },
+  {
+    "label": "Measuring cup - Ly đo lường",
+    "value": "Measuring cup"
+  },
+  {
+    "label": "Mechanical fan - Quạt cơ",
+    "value": "Mechanical fan"
+  },
+  {
+    "label": "Medical equipment - Thiết bị y tế",
+    "value": "Medical equipment"
+  },
+  {
+    "label": "Microphone - Cái mic cờ rô",
+    "value": "Microphone"
+  },
+  {
+    "label": "Microwave oven - Lò vi sóng",
+    "value": "Microwave oven"
+  },
+  {
+    "label": "Milk - Sữa",
+    "value": "Milk"
+  },
+  {
+    "label": "Miniskirt - Váy ngắn",
+    "value": "Miniskirt"
+  },
+  {
+    "label": "Mirror - Gương",
+    "value": "Mirror"
+  },
+  {
+    "label": "Missile - Hỏa tiễn",
+    "value": "Missile"
+  },
+  {
+    "label": "Mixer - Máy trộn",
+    "value": "Mixer"
+  },
+  {
+    "label": "Mixing bowl - Bát trộn",
+    "value": "Mixing bowl"
+  },
+  {
+    "label": "Mobile phone - Điện thoại di động",
+    "value": "Mobile phone"
+  },
+  {
+    "label": "Monkey - Con khỉ",
+    "value": "Monkey"
+  },
+  {
+    "label": "Moths and butterflies - Bướm đêm và bướm",
+    "value": "Moths and butterflies"
+  },
+  {
+    "label": "Motorcycle - Xe máy",
+    "value": "Motorcycle"
+  },
+  {
+    "label": "Mouse - Chuột",
+    "value": "Mouse"
+  },
+  {
+    "label": "Muffin - bánh nướng xốp",
+    "value": "Muffin"
+  },
+  {
+    "label": "Mug - Cốc",
+    "value": "Mug"
+  },
+  {
+    "label": "Mule - Con la",
+    "value": "Mule"
+  },
+  {
+    "label": "Mushroom - Nấm",
+    "value": "Mushroom"
+  },
+  {
+    "label": "Musical instrument - Nhạc cụ",
+    "value": "Musical instrument"
+  },
+  {
+    "label": "Musical keyboard - Bàn phím âm nhạc",
+    "value": "Musical keyboard"
+  },
+  {
+    "label": "Nail - Móng tay",
+    "value": "Nail"
+  },
+  {
+    "label": "Necklace - Vòng cổ",
+    "value": "Necklace"
+  },
+  {
+    "label": "Nightstand - Đầu giường",
+    "value": "Nightstand"
+  },
+  {
+    "label": "Oboe - kèn oboe",
+    "value": "Oboe"
+  },
+  {
+    "label": "Office building - Tòa nhà văn phòng",
+    "value": "Office building"
+  },
+  {
+    "label": "Office supplies - Văn phòng phẩm",
+    "value": "Office supplies"
+  },
+  {
+    "label": "Orange - Quả cam",
+    "value": "Orange"
+  },
+  {
+    "label": "Organ - Đàn organ",
+    "value": "Organ"
+  },
+  {
+    "label": "Ostrich - đà điểu",
+    "value": "Ostrich"
+  },
+  {
+    "label": "Otter - Rái cá",
+    "value": "Otter"
+  },
+  {
+    "label": "Oven - Lò vi sóng",
+    "value": "Oven"
+  },
+  {
+    "label": "Owl - Con cú",
+    "value": "Owl"
+  },
+  {
+    "label": "Oyster - con hàu",
+    "value": "Oyster"
+  },
+  {
+    "label": "Paddle - Mái chèo",
+    "value": "Paddle"
+  },
+  {
+    "label": "Palm tree - cây cọ",
+    "value": "Palm tree"
+  },
+  {
+    "label": "Pancake - Bánh kếp",
+    "value": "Pancake"
+  },
+  {
+    "label": "Panda - gấu trúc",
+    "value": "Panda"
+  },
+  {
+    "label": "Paper towel - Khăn giấy",
+    "value": "Paper towel"
+  },
+  {
+    "label": "Parachute - Cái dù bay",
+    "value": "Parachute"
+  },
+  {
+    "label": "Parking meter - Đồng hồ đỗ xe",
+    "value": "Parking meter"
+  },
+  {
+    "label": "Parrot - Con vẹt",
+    "value": "Parrot"
+  },
+  {
+    "label": "Pasta - Mỳ ống",
+    "value": "Pasta"
+  },
+  {
+    "label": "Pastry - bánh ngọt",
+    "value": "Pastry"
+  },
+  {
+    "label": "Peach - Quả đào",
+    "value": "Peach"
+  },
+  {
+    "label": "Pear - Quả lê",
+    "value": "Pear"
+  },
+  {
+    "label": "Pen - Cái bút",
+    "value": "Pen"
+  },
+  {
+    "label": "Pencil case - Hộp bút",
+    "value": "Pencil case"
+  },
+  {
+    "label": "Penguin - chim cánh cụt",
+    "value": "Penguin"
+  },
+  {
+    "label": "Perfume - Nước hoa",
+    "value": "Perfume"
+  },
+  {
+    "label": "Person - Người",
+    "value": "Person"
+  },
+  {
+    "label": "Personal care - Chăm sóc cá nhân",
+    "value": "Personal care"
+  },
+  {
+    "label": "Piano - Đàn piano",
+    "value": "Piano"
+  },
+  {
+    "label": "Picnic basket - Giỏ đi dã ngoại",
+    "value": "Picnic basket"
+  },
+  {
+    "label": "Picture frame - Khung tranh",
+    "value": "Picture frame"
+  },
+  {
+    "label": "Pig - Con lợn",
+    "value": "Pig"
+  },
+  {
+    "label": "Pillow - Cái gối",
+    "value": "Pillow"
+  },
+  {
+    "label": "Pineapple - Quả dứa",
+    "value": "Pineapple"
+  },
+  {
+    "label": "Pitcher - Cái bình",
+    "value": "Pitcher"
+  },
+  {
+    "label": "Pizza - pizza",
+    "value": "Pizza"
+  },
+  {
+    "label": "Plant - Thực vật",
+    "value": "Plant"
+  },
+  {
+    "label": "Plastic bag - Túi nhựa",
+    "value": "Plastic bag"
+  },
+  {
+    "label": "Plate - Đĩa",
+    "value": "Plate"
+  },
+  {
+    "label": "Platter - Đĩa",
+    "value": "Platter"
+  },
+  {
+    "label": "Plumbing fixture - Hệ thống nước cố định",
+    "value": "Plumbing fixture"
+  },
+  {
+    "label": "Polar bear - Gấu Bắc cực",
+    "value": "Polar bear"
+  },
+  {
+    "label": "Pomegranate - Trái thạch lựu",
+    "value": "Pomegranate"
+  },
+  {
+    "label": "Popcorn - Bắp rang bơ",
+    "value": "Popcorn"
+  },
+  {
+    "label": "Porch - Hiên nhà",
+    "value": "Porch"
+  },
+  {
+    "label": "Porcupine - Nhím",
+    "value": "Porcupine"
+  },
+  {
+    "label": "Poster - Áp phích",
+    "value": "Poster"
+  },
+  {
+    "label": "Potato - Khoai tây",
+    "value": "Potato"
+  },
+  {
+    "label": "Power plugs and sockets - Phích cắm và ổ cắm điện",
+    "value": "Power plugs and sockets"
+  },
+  {
+    "label": "Pretzel - bánh quy xoắn",
+    "value": "Pretzel"
+  },
+  {
+    "label": "Printer - Máy in",
+    "value": "Printer"
+  },
+  {
+    "label": "Pumpkin - Quả bí ngô",
+    "value": "Pumpkin"
+  },
+  {
+    "label": "Punching bag - Túi đấm",
+    "value": "Punching bag"
+  },
+  {
+    "label": "Rabbit - Con thỏ",
+    "value": "Rabbit"
+  },
+  {
+    "label": "Raccoon - Gấu mèo",
+    "value": "Raccoon"
+  },
+  {
+    "label": "Racket - Vợt",
+    "value": "Racket"
+  },
+  {
+    "label": "Radish - củ cải",
+    "value": "Radish"
+  },
+  {
+    "label": "Ratchet - bánh cóc",
+    "value": "Ratchet"
+  },
+  {
+    "label": "Raven - con quạ",
+    "value": "Raven"
+  },
+  {
+    "label": "Rays and skates - Tia và giày trượt",
+    "value": "Rays and skates"
+  },
+  {
+    "label": "Red panda - Gấu trúc đỏ",
+    "value": "Red panda"
+  },
+  {
+    "label": "Refrigerator - Tủ lạnh",
+    "value": "Refrigerator"
+  },
+  {
+    "label": "Remote control - Điều khiển từ xa",
+    "value": "Remote control"
+  },
+  {
+    "label": "Reptile - Bò sát",
+    "value": "Reptile"
+  },
+  {
+    "label": "Rhinoceros - Tê giác",
+    "value": "Rhinoceros"
+  },
+  {
+    "label": "Rifle - súng trường",
+    "value": "Rifle"
+  },
+  {
+    "label": "Ring binder - Chất kết dính vòng",
+    "value": "Ring binder"
+  },
+  {
+    "label": "Rocket - Tên lửa",
+    "value": "Rocket"
+  },
+  {
+    "label": "Roller skates - Giày patin",
+    "value": "Roller skates"
+  },
+  {
+    "label": "Rose - Hoa hồng",
+    "value": "Rose"
+  },
+  {
+    "label": "Rugby ball - Bóng bầu dục",
+    "value": "Rugby ball"
+  },
+  {
+    "label": "Ruler - Cái thước kẻ",
+    "value": "Ruler"
+  },
+  {
+    "label": "Salad - Xa lát",
+    "value": "Salad"
+  },
+  {
+    "label": "Salt and pepper shakers - Máy lắc muối và hạt tiêu",
+    "value": "Salt and pepper shakers"
+  },
+  {
+    "label": "Sandal - Sandal",
+    "value": "Sandal"
+  },
+  {
+    "label": "Sandwich - Bánh mì sandwich",
+    "value": "Sandwich"
+  },
+  {
+    "label": "Saucer - Đĩa lót tách",
+    "value": "Saucer"
+  },
+  {
+    "label": "Saxophone - kèn saxophone",
+    "value": "Saxophone"
+  },
+  {
+    "label": "Scale - Tỉ lệ",
+    "value": "Scale"
+  },
+  {
+    "label": "Scarf - Khăn quàng cổ",
+    "value": "Scarf"
+  },
+  {
+    "label": "Scissors - Kéo",
+    "value": "Scissors"
+  },
+  {
+    "label": "Scoreboard - Bảng điểm",
+    "value": "Scoreboard"
+  },
+  {
+    "label": "Scorpion - bọ cạp",
+    "value": "Scorpion"
+  },
+  {
+    "label": "Screwdriver - Cái vặn vít",
+    "value": "Screwdriver"
+  },
+  {
+    "label": "Sculpture - Điêu khắc",
+    "value": "Sculpture"
+  },
+  {
+    "label": "Sea lion - Sư tử biển",
+    "value": "Sea lion"
+  },
+  {
+    "label": "Sea turtle - Con rùa biển",
+    "value": "Sea turtle"
+  },
+  {
+    "label": "Seafood - Hải sản",
+    "value": "Seafood"
+  },
+  {
+    "label": "Seahorse - Cá ngựa",
+    "value": "Seahorse"
+  },
+  {
+    "label": "Seat belt - Dây an toàn",
+    "value": "Seat belt"
+  },
+  {
+    "label": "Segway - xe điện segway",
+    "value": "Segway"
+  },
+  {
+    "label": "Serving tray - Khay phục vụ",
+    "value": "Serving tray"
+  },
+  {
+    "label": "Sewing machine - Máy may",
+    "value": "Sewing machine"
+  },
+  {
+    "label": "Shark - Cá mập",
+    "value": "Shark"
+  },
+  {
+    "label": "Sheep - Con cừu",
+    "value": "Sheep"
+  },
+  {
+    "label": "Shelf - Cái kệ",
+    "value": "Shelf"
+  },
+  {
+    "label": "Shellfish - Động vật có vỏ",
+    "value": "Shellfish"
+  },
+  {
+    "label": "Shirt - Áo sơ mi",
+    "value": "Shirt"
+  },
+  {
+    "label": "Shorts - Quần short",
+    "value": "Shorts"
+  },
+  {
+    "label": "Shotgun - súng ngắn",
+    "value": "Shotgun"
+  },
+  {
+    "label": "Shower - Vòi sen",
+    "value": "Shower"
+  },
+  {
+    "label": "Shrimp - Con tôm",
+    "value": "Shrimp"
+  },
+  {
+    "label": "Sink - Bồn rửa",
+    "value": "Sink"
+  },
+  {
+    "label": "Skateboard - Ván trượt",
+    "value": "Skateboard"
+  },
+  {
+    "label": "Ski - Trượt tuyết",
+    "value": "Ski"
+  },
+  {
+    "label": "Skirt - Váy ngắn",
+    "value": "Skirt"
+  },
+  {
+    "label": "Skull - Đầu lâu",
+    "value": "Skull"
+  },
+  {
+    "label": "Skyscraper - Tòa nhà chọc trời",
+    "value": "Skyscraper"
+  },
+  {
+    "label": "Slow cooker - Nồi nấu chậm",
+    "value": "Slow cooker"
+  },
+  {
+    "label": "Snack - Đồ ăn vặt",
+    "value": "Snack"
+  },
+  {
+    "label": "Snail - Ốc sên",
+    "value": "Snail"
+  },
+  {
+    "label": "Snake - Rắn",
+    "value": "Snake"
+  },
+  {
+    "label": "Snowboard - Ván trượt tuyết",
+    "value": "Snowboard"
+  },
+  {
+    "label": "Snowman - Người tuyết",
+    "value": "Snowman"
+  },
+  {
+    "label": "Snowmobile - Xe trượt tuyết",
+    "value": "Snowmobile"
+  },
+  {
+    "label": "Snowplow - Đồ ủi tuyết",
+    "value": "Snowplow"
+  },
+  {
+    "label": "Soap dispenser - Máy tạo xà phòng",
+    "value": "Soap dispenser"
+  },
+  {
+    "label": "Sock - tất",
+    "value": "Sock"
+  },
+  {
+    "label": "Sofa bed - Sofa giường",
+    "value": "Sofa bed"
+  },
+  {
+    "label": "Sombrero - mũ rộng vành",
+    "value": "Sombrero"
+  },
+  {
+    "label": "Sparrow - chim sẻ",
+    "value": "Sparrow"
+  },
+  {
+    "label": "Spatula - Thìa",
+    "value": "Spatula"
+  },
+  {
+    "label": "Spice rack - gia vị",
+    "value": "Spice rack"
+  },
+  {
+    "label": "Spider - nhện",
+    "value": "Spider"
+  },
+  {
+    "label": "Spoon - Thìa",
+    "value": "Spoon"
+  },
+  {
+    "label": "Sports equipment - Thiết bị thể thao",
+    "value": "Sports equipment"
+  },
+  {
+    "label": "Sports uniform - Đồng phục thể thao",
+    "value": "Sports uniform"
+  },
+  {
+    "label": "Squash - Bí đao",
+    "value": "Squash"
+  },
+  {
+    "label": "Squid - Mực ống",
+    "value": "Squid"
+  },
+  {
+    "label": "Squirrel - Sóc",
+    "value": "Squirrel"
+  },
+  {
+    "label": "Stairs - Cầu thang",
+    "value": "Stairs"
+  },
+  {
+    "label": "Stapler - Máy dập ghim",
+    "value": "Stapler"
+  },
+  {
+    "label": "Starfish - sao biển",
+    "value": "Starfish"
+  },
+  {
+    "label": "Stationary bicycle - Xe đạp văn phòng",
+    "value": "Stationary bicycle"
+  },
+  {
+    "label": "Stool - Ghế đẩu",
+    "value": "Stool"
+  },
+  {
+    "label": "Stop sign - Biển báo dừng",
+    "value": "Stop sign"
+  },
+  {
+    "label": "Strawberry - Quả dâu",
+    "value": "Strawberry"
+  },
+  {
+    "label": "Street light - đèn đường",
+    "value": "Street light"
+  },
+  {
+    "label": "Stretcher - cáng",
+    "value": "Stretcher"
+  },
+  {
+    "label": "Studio couch - Ghế studio",
+    "value": "Studio couch"
+  },
+  {
+    "label": "Submarine - tàu ngầm",
+    "value": "Submarine"
+  },
+  {
+    "label": "Submarine sandwich - Bánh sandwich tàu ngầm",
+    "value": "Submarine sandwich"
+  },
+  {
+    "label": "Suit - Bộ đồ",
+    "value": "Suit"
+  },
+  {
+    "label": "Suitcase - Va li",
+    "value": "Suitcase"
+  },
+  {
+    "label": "Sun hat - mũ chống nắng",
+    "value": "Sun hat"
+  },
+  {
+    "label": "Sunflower - hướng dương",
+    "value": "Sunflower"
+  },
+  {
+    "label": "Sunglasses - Kính râm",
+    "value": "Sunglasses"
+  },
+  {
+    "label": "Surfboard - Ván lướt sóng",
+    "value": "Surfboard"
+  },
+  {
+    "label": "Sushi - sushi",
+    "value": "Sushi"
+  },
+  {
+    "label": "Swan - Thiên nga",
+    "value": "Swan"
+  },
+  {
+    "label": "Swim cap - Mũ bơi",
+    "value": "Swim cap"
+  },
+  {
+    "label": "Swimming pool - Hồ bơi",
+    "value": "Swimming pool"
+  },
+  {
+    "label": "Swimwear - Đồ bơi",
+    "value": "Swimwear"
+  },
+  {
+    "label": "Sword - Thanh kiếm",
+    "value": "Sword"
+  },
+  {
+    "label": "Syringe - Ống tiêm",
+    "value": "Syringe"
+  },
+  {
+    "label": "Table - Bàn",
+    "value": "Table"
+  },
+  {
+    "label": "Table tennis racket - Vợt bóng bàn",
+    "value": "Table tennis racket"
+  },
+  {
+    "label": "Tablet computer - Máy tính bảng",
+    "value": "Tablet computer"
+  },
+  {
+    "label": "Tableware - Bộ đồ ăn",
+    "value": "Tableware"
+  },
+  {
+    "label": "Taco - Taco",
+    "value": "Taco"
+  },
+  {
+    "label": "Tank - Xe tăng",
+    "value": "Tank"
+  },
+  {
+    "label": "Tap - Vỗ nhẹ",
+    "value": "Tap"
+  },
+  {
+    "label": "Tart - Chua cay",
+    "value": "Tart"
+  },
+  {
+    "label": "Taxi - xe tắc xi",
+    "value": "Taxi"
+  },
+  {
+    "label": "Tea - Trà",
+    "value": "Tea"
+  },
+  {
+    "label": "Teapot - Ấm trà",
+    "value": "Teapot"
+  },
+  {
+    "label": "Teddy bear - gấu bông",
+    "value": "Teddy bear"
+  },
+  {
+    "label": "Telephone - Điện thoại",
+    "value": "Telephone"
+  },
+  {
+    "label": "Television - Tivi",
+    "value": "Television"
+  },
+  {
+    "label": "Tennis ball - Bóng tennis",
+    "value": "Tennis ball"
+  },
+  {
+    "label": "Tennis racket - Vợt tennis",
+    "value": "Tennis racket"
+  },
+  {
+    "label": "Tent - Lều",
+    "value": "Tent"
+  },
+  {
+    "label": "Tiara - vương miện",
+    "value": "Tiara"
+  },
+  {
+    "label": "Tick - đánh dấu",
+    "value": "Tick"
+  },
+  {
+    "label": "Tie - Cà vạt",
+    "value": "Tie"
+  },
+  {
+    "label": "Tiger - Con hổ",
+    "value": "Tiger"
+  },
+  {
+    "label": "Tin can - Hộp thiếc",
+    "value": "Tin can"
+  },
+  {
+    "label": "Tire - Lốp xe",
+    "value": "Tire"
+  },
+  {
+    "label": "Toaster - Máy nướng bánh mì",
+    "value": "Toaster"
+  },
+  {
+    "label": "Toilet - Phòng vệ sinh",
+    "value": "Toilet"
+  },
+  {
+    "label": "Toilet paper - Giấy vệ sinh",
+    "value": "Toilet paper"
+  },
+  {
+    "label": "Tomato - Cà chua",
+    "value": "Tomato"
+  },
+  {
+    "label": "Tool - Dụng cụ",
+    "value": "Tool"
+  },
+  {
+    "label": "Toothbrush - Bàn chải đánh răng",
+    "value": "Toothbrush"
+  },
+  {
+    "label": "Tortoise - Con rùa",
+    "value": "Tortoise"
+  },
+  {
+    "label": "Towel - Cái khăn lau",
+    "value": "Towel"
+  },
+  {
+    "label": "Tower - Tòa tháp",
+    "value": "Tower"
+  },
+  {
+    "label": "Toy - đồ chơi",
+    "value": "Toy"
+  },
+  {
+    "label": "Traffic light - Đèn giao thông",
+    "value": "Traffic light"
+  },
+  {
+    "label": "Traffic sign - Biển báo giao thông",
+    "value": "Traffic sign"
+  },
+  {
+    "label": "Train - Xe lửa",
+    "value": "Train"
+  },
+  {
+    "label": "Training bench - Ghế tập",
+    "value": "Training bench"
+  },
+  {
+    "label": "Treadmill - Máy chạy bộ",
+    "value": "Treadmill"
+  },
+  {
+    "label": "Tree - Cây",
+    "value": "Tree"
+  },
+  {
+    "label": "Tree house - Nhà trên cây",
+    "value": "Tree house"
+  },
+  {
+    "label": "Tripod - Giá ba chân",
+    "value": "Tripod"
+  },
+  {
+    "label": "Trombone - kèn trombone",
+    "value": "Trombone"
+  },
+  {
+    "label": "Trousers - Quần dài",
+    "value": "Trousers"
+  },
+  {
+    "label": "Truck - Xe tải",
+    "value": "Truck"
+  },
+  {
+    "label": "Trumpet - kèn",
+    "value": "Trumpet"
+  },
+  {
+    "label": "Turkey - Thổ Nhĩ Kỳ",
+    "value": "Turkey"
+  },
+  {
+    "label": "Turtle - Con rùa",
+    "value": "Turtle"
+  },
+  {
+    "label": "Umbrella - Chiếc ô",
+    "value": "Umbrella"
+  },
+  {
+    "label": "Unicycle - Xe đạp một bánh",
+    "value": "Unicycle"
+  },
+  {
+    "label": "Van - Qua",
+    "value": "Van"
+  },
+  {
+    "label": "Vase - Lọ cắm hoa",
+    "value": "Vase"
+  },
+  {
+    "label": "Vegetable - Rau quả",
+    "value": "Vegetable"
+  },
+  {
+    "label": "Vehicle - Phương tiện giao thông",
+    "value": "Vehicle"
+  },
+  {
+    "label": "Vehicle registration plate - Biển đăng ký xe",
+    "value": "Vehicle registration plate"
+  },
+  {
+    "label": "Violin - Đàn vi ô lông",
+    "value": "Violin"
+  },
+  {
+    "label": "Volleyball - Bóng chuyền",
+    "value": "Volleyball"
+  },
+  {
+    "label": "Waffle - bánh quế",
+    "value": "Waffle"
+  },
+  {
+    "label": "Wall clock - Đồng hồ treo tường",
+    "value": "Wall clock"
+  },
+  {
+    "label": "Wardrobe - Tủ quần áo",
+    "value": "Wardrobe"
+  },
+  {
+    "label": "Washing machine - Máy giặt",
+    "value": "Washing machine"
+  },
+  {
+    "label": "Waste container - Thùng chứa chất thải",
+    "value": "Waste container"
+  },
+  {
+    "label": "Watch - Đồng hồ",
+    "value": "Watch"
+  },
+  {
+    "label": "Watercraft - Tàu thủy",
+    "value": "Watercraft"
+  },
+  {
+    "label": "Watermelon - Dưa hấu",
+    "value": "Watermelon"
+  },
+  {
+    "label": "Weapon - vũ khí",
+    "value": "Weapon"
+  },
+  {
+    "label": "Whale - Cá voi",
+    "value": "Whale"
+  },
+  {
+    "label": "Wheel - Bánh xe",
+    "value": "Wheel"
+  },
+  {
+    "label": "Wheelchair - Xe lăn",
+    "value": "Wheelchair"
+  },
+  {
+    "label": "Whisk - đánh kem",
+    "value": "Whisk"
+  },
+  {
+    "label": "Whiteboard - Bảng trắng",
+    "value": "Whiteboard"
+  },
+  {
+    "label": "Window - Cửa sổ",
+    "value": "Window"
+  },
+  {
+    "label": "Window blind - Rèm cửa sổ",
+    "value": "Window blind"
+  },
+  {
+    "label": "Wine - Rượu",
+    "value": "Wine"
+  },
+  {
+    "label": "Wine glass - Ly rượu",
+    "value": "Wine glass"
+  },
+  {
+    "label": "Wine rack - Giá đựng rượu",
+    "value": "Wine rack"
+  },
+  {
+    "label": "Winter melon - Bí đao",
+    "value": "Winter melon"
+  },
+  {
+    "label": "Wok - Chảo",
+    "value": "Wok"
+  },
+  {
+    "label": "Woman - Đàn bà",
+    "value": "Woman"
+  },
+  {
+    "label": "Wood-burning stove - Lò đốt củi",
+    "value": "Wood-burning stove"
+  },
+  {
+    "label": "Woodpecker - chim gõ kiến",
+    "value": "Woodpecker"
+  },
+  {
+    "label": "Worm - Sâu",
+    "value": "Worm"
+  },
+  {
+    "label": "Wrench - Cờ lê",
+    "value": "Wrench"
+  },
+  {
+    "label": "Zebra - Ngựa vằn",
+    "value": "Zebra"
+  },
+  {
+    "label": "Zucchini - Quả bí",
+    "value": "Zucchini"
+  }
+];
+
+
+    </script>
+    <script>
+        let current_val= [];
+const autocomplete = new MultiSelect2(".autocomplete", {
+    options: myOptions,
+    value: [],
+    multiple: true,
+    autocomplete: true,
+    icon: "fa fa-times",
+    onChange: value => {
+        console.log(value);
+        current_val=value;
+        console.log(current_val)
+    },
+});
+
+    </script>
+</body>
+
+</html>

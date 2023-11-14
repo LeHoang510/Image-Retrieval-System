@@ -1,0 +1,10 @@
+<link rel="stylesheet" type="text/css" href="old-style.css">
+    <link rel="stylesheet" type="text/css" href="search-bar-style.css">
+    <link rel="stylesheet" href="autocomplete.css">
+
+
+    <script src="old-script.js"></script>
+    <script src="search-bar-mode.js"></script>
+    <script src="node_modules/multi-select2/bundle.min.js"></script>
+    <script src="output.js"></script>
+    <script src="autocomplete.js"></script>
